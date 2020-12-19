@@ -271,6 +271,7 @@ body {
   padding-bottom: 5px ; 
   padding-top: 10px ; 
   padding-right: 10px ; 
+  margin-left:30px ; 
   
 } 
 
@@ -329,7 +330,7 @@ ul {
 
 ul#card-lowerbar li{
   display: inline ; 
-  padding-right : 100px ;
+  padding-right : 50px ;
   margin-left: 0px ;
   font-size: large ;
 }
