@@ -180,5 +180,63 @@ def search(request) :
     locations = Country.objects.all()
     language_list_ht =  language_list.objects.all()
 
-    return render( request , 'index.html' , {'se' : asd , 'type' : type_user , 'locations' : locations , 'language_list_ht' : language_list_ht   })
+    return render( request , 'index.html' , {'se' : asd , 'type' : type_user , 'locations' : locations , 'language_list_ht' : language_list_ht ,'pre' :   hourly_query  + talent_query + search_string    })
 
+
+
+def search_segment(request) : 
+    user_id = request.GET.get('user_id')
+    #print(user_id)
+    user_type =  User.objects.raw(" select id , role_id from user where id = " + user_id + "  ; ")
+    
+    
+    for i in user_type : 
+        type_user =  i.role_id 
+        #print(i.role_id )   
+     
+    required_string = "profile.id, profile.first_name ,  profile.last_name , profile.experience , profile.user_id , profile.current_position , state.state , country.country , skill.skills " 
+    tables_used = " profile  , country , state , skill , user ,  filter_details "
+    condition_string = "profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = user.id  and  filter_details.user_id = profile.user_id  " 
+
+
+    cla = request.GET.get("cla")
+
+    if cla == None : 
+        cla = ""
+    pre = request.GET.get("current")
+
+    if pre == None : 
+        pre = ""
+        
+    condition_string = condition_string +  pre  + " and skill.skill_description = '" + cla + "'"
+
+
+    query_string = " select  " + required_string + "  from  "  +  tables_used + " where  "  + condition_string + " ; "
+    print(query_string)
+    asd =  Profile.objects.raw( query_string )
+
+
+    if asd != None : 
+        for i in asd : 
+            if i.skills == None : 
+                i.skill = {}
+                continue  
+            i.skill =  json.loads( i.skills )
+        #print( type (  json.loads( i.skills ) ) )
+    #select profile.id, first_name ,  last_name , experience , profile.user_id , current_position , state , country , skills   from profile  , country , state , skill , filter_details  where profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = filter_details.user_id and filter_details.language like "E%";
+    
+
+
+
+
+    locations = Country.objects.all()
+    language_list_ht =  language_list.objects.all()
+
+    return render( request , 'index.html' , {'se' : asd , 'type' : type_user , 'locations' : locations , 'language_list_ht' : language_list_ht  , 'pre' : pre })
+
+
+
+
+
+def message(request) : 
+    return render(request , 'message.html')

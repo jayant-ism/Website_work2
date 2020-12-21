@@ -8,9 +8,8 @@ body {
   width: 0;
   position: fixed;
   z-index: 1;
-  
   left: 0;
-  
+
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 60px;
@@ -25,9 +24,7 @@ body {
   transition: 0.3s;
 }
 
-.sidebar a:hover {
-  color: #f1f1f1;
-}
+
 
 .sidebar .closebtn {
   position: absolute;
@@ -64,12 +61,13 @@ body {
 
 
 .topnav {
+
     overflow: hidden;
     background-color: #0D3451;
   }
   
   .topnav a {
-    float: left;
+    
     display: block;
     color: #f2f2f2;
     text-align: center;
@@ -77,6 +75,8 @@ body {
     text-decoration: none;
     font-size: 17px;
   }
+
+  
   
   .topnav a:hover {
     background-color: #ddd;
@@ -91,7 +91,6 @@ body {
   .topnav .icon {
     display: none;
   }
-  
   @media screen and (max-width: 600px) {
     .topnav a:not(:first-child) {display: none;}
     .topnav a.icon {
@@ -183,8 +182,8 @@ body {
 
 
 #sidepart {
-    height: 60% ; 
-    background-color : lightcyan  ;
+    height: 60% ;  
+    background-color: #c3e3f6;
     padding-left : 10px ; 
     margin-left : 50px ; 
     margin-right : 50px ; 
@@ -232,7 +231,7 @@ body {
 
 .cards {
   background-color: #c3e3f6;
-  margin-left: 10px ;
+
   margin-top: 100px ;
 }
 
@@ -293,6 +292,18 @@ body {
 }
 
 
+
+
+.card-desi{
+  display: inline;
+  
+}
+
+  
+
+
+
+
 .padding-0{
   padding-right:0;
   padding-left:0;
@@ -319,6 +330,16 @@ ul#skilllist li {
   display:inline;
 }
 
+
+@media screen and (max-width: 600px) {
+
+  ul#skilllist li {
+    display:block;
+  }
+  
+
+}
+
 #skilllist {
   padding-right:0px ; 
   margin-right: 0px ;
@@ -335,3 +356,35 @@ ul#card-lowerbar li{
   font-size: large ;
 }
 
+.asc {
+
+  float: right  !important   ;
+  
+  }
+  .bsc{
+    float: left;
+  }
+  
+  @media screen and (max-width: 600px) {
+   
+    .bsc{
+      float: none ;
+    }
+    .asc {
+  
+  float: none  !important   ;
+  
+  }
+
+  ul#card-lowerbar li{
+    display: none ; 
+    padding-right : 50px ;
+    margin-left: 0px ;
+    font-size: large ;
+  }
+
+
+  
+  
+  }
+    

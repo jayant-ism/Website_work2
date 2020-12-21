@@ -21,16 +21,20 @@
     <a href="javascript:void(0);" id="butt" class="icon" onclick="myFunction()">
         <i class="fa fa-bars"></i>
       </a>
-      <a href="#news" id="ok1" style="float:left" >TutorLabs.com</a>
-      <a href="#news" id="ok2" style="float:right" >News</a>
-      <a href="#news" id="ok3" style="float:right" >News</a>
-      <a href="#news" id="ok4" style="float:right" >News</a>
-      <a href="#news" id="ok5" style="float:right" >News</a>
-  </div>
+      <a href="#" class="bsc"  >TutorLabs.com</a>
+      <a href="#"  class="asc" ><img width=50 height=50 style="  border-radius: 50% ;"  src="{% static 'download.jpg' %}">       </a>
+  
+      <a href="#" class="asc" >Dashboard</a>
+      <a href="#" class="asc" >MYytutors</a>
+      <a href="#" class="asc" >Reports </a>
+      <a href="#" class="asc" >Messages</a>
+  
+    </div>
+  
   <div>
     <div id="mySidebar" class="sidebar">
       <div class="container"> 
-        <h1> Get Your Work Done</h1>
+        <h2> Get Your Work Done</h2>
       </div>
       <br>
       <br>
@@ -46,12 +50,17 @@
         <ul>
           <li> <h4> Skills I need</h4> </li>
           <li> <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a></li>
-          <li> <a href="#">Website Design</a></li>
-          <li><a href="#">Web and Mobile Design</a></li>
-          <li><a href="#">Front end development</a></li>
-          <li><a href="#">Machine Learning</a></li>
-          <li><a href="#">Graphics and Design</a></li>
-          <li> <a href="#">Video Production</a></li>
+
+
+          <li> <form action="search_segment"><input type="hidden" name="cla" value="Front end and backend"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input style="background-color: inherit ; border: none;   outline: none;"  type="submit"  value="Webdesign">      </form>
+          </li>
+          <li> <form action="search_segment"><input type="hidden" name="cla" value="Coding"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input type="submit" style="background-color: inherit ; border: none;   outline: none;" value="Coding">      </form>
+          </li>
+          <li> <form action="search_segment"><input type="hidden" name="cla" value="Android"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input type="submit" style="background-color: inherit ; border: none;   outline: none;" value="Android">      </form>
+          </li>
+          <li> <form action="search_segment"><input type="hidden" name="cla" value="Marketing"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input type="submit" style="background-color: inherit ; border: none;   outline: none;" value="Marketing">      </form>
+          </li>
+          
         </ul>
         
         
@@ -165,11 +174,6 @@
             <div id="maincontent">
               <div class="container">
 
-                {%  for i in se %}
-                 {{ i.first_name  }}
-
-                {% endfor %}
-                
               </div>
               <!-- design of a card -->
             
@@ -178,25 +182,21 @@
                 <div class="card-inside">
                   <div class="container-fluid pt-16">
 
-                    <ul>
+                    <ul class="card-desi">
                       <li>
-                        <div class="col-sm-2"><!-- image --> 
-                          <img width=100 height=100 class="card-img"  src="{% static 'download.jpg' %}"> 
-                          </div>
-
-                          
+                      <div > 
+                        <img width=100 height=100 class="card-img"  src="{% static 'download.jpg' %}"> 
+                      </div>
                       </li>
                       <li>
-                        <div class="col-sm-8"><!-- content -->
+                        <div class="container-fluid"><!-- content -->
                           <h2 class="card-name"> <strong> {{ i.first_name }}  {{ i.last_name }} </strong> </h2>
                           <hr>
                           <h4 class="card-description"> {{ i.position  }}   </h4>
                           <div class="container-fluid">
                             <div class="container-fluid">
                               <ul id="skilllist">
-
                                 <li> <h4 class="card-skill"> Skill: </h4></li>
-                                
                                 {% for ski in i.skill.skills %}
                                   <li> <h4 class="card-skillset"> {{ ski }}</h4></li>
                                 {% endfor  %}                    
@@ -227,9 +227,6 @@
               </div>
             </div>
                 {% endfor %}
-
-
-
           </div>     
       </div>
   </div> 
@@ -243,8 +240,8 @@ var sets = 0 ;
 resize_cont() ; 
 
 function openNav() {
-  document.getElementById("mySidebar").style.width = "400px";
-  document.getElementById("main").style.marginLeft = "400px";
+  document.getElementById("mySidebar").style.width = "300px";
+  document.getElementById("main").style.marginLeft = "300px";
   sets = 1 ; 
   resize_cont() ; 
   
@@ -306,13 +303,9 @@ document.getElementById("main").style.display = "block" ;
 
 
   }
-
-  
-
+/*
   var widths = parseInt ( screen.width , 10 )  ;
-  
-var ele = parseInt( "600px",10);
-
+  var ele = parseInt( "600px",10);
   if( widths > ele   )
   {
     document.getElementById("ok5").style.float = "right"  ;
@@ -333,11 +326,7 @@ var ele = parseInt( "600px",10);
     document.getElementById("ok5").style.float = "none"  ; 
 
   }
-
-  
-
-
- 
+  */
 }
 
 
