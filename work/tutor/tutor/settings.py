@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'basic' ,
-    
+    'django.core.paginator',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +80,8 @@ DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.mysql',
 'NAME': 'work_2',
-'USER': '',
-'PASSWORD': '',
+'USER': 'jayant',
+'PASSWORD': 'Jayant@2001',
 'HOST': '',
 'PORT': '',
 'OPTIONS': {

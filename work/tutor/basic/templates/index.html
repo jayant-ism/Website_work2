@@ -52,15 +52,23 @@
           <li> <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a></li>
 
 
-          <li> <form action="search_segment"><input type="hidden" name="cla" value="Webdesign"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input style="background-color: inherit ; border: none;   outline: none;"  type="submit"  value="Webdesign">      </form>
+          <li> 
+            <button type="submit" form="search_bar" name="section" style="background-color: inherit ; border: none;   outline: none;"  value="Webdesign"> Webdesign </button> 
           </li>
-          <li> <form action="search_segment"><input type="hidden" name="cla" value="Coding"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input type="submit" style="background-color: inherit ; border: none;   outline: none;" value="Coding">      </form>
+
+          <li> 
+            <button type="submit" form="search_bar" name="section" style="background-color: inherit ; border: none;   outline: none;"  value="Coding"> Coding </button>
           </li>
-          <li> <form action="search_segment"><input type="hidden" name="cla" value="Android"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input type="submit" style="background-color: inherit ; border: none;   outline: none;" value="Android">      </form>
+
+          <li> 
+            <button type="submit" form="search_bar" name="section" style="background-color: inherit ; border: none;   outline: none;"  value="Android">Android</button>
           </li>
-          <li> <form action="search_segment"><input type="hidden" name="cla" value="Marketing"  > <input type="hidden" name="user_id" value="11">    <input type="hidden" value={{pre}} name="current">  <input type="submit" style="background-color: inherit ; border: none;   outline: none;" value="Marketing">      </form>
+
+          <li> 
+            <button type="submit" form="search_bar" name="section" style="background-color: inherit ; border: none;   outline: none;"  value="Marketing">Marketing </button>
           </li>
-          
+
+
         </ul>
         
         
@@ -86,30 +94,36 @@
       
           <div id="searchbar" > 
       
-            <form class="form-inline" action="search">
+            <form class="form-inline" id="search_bar" action="search">
       
-              <input type="text" id="fname" class="form-control" name="fname">
+              <input type="text" id="fname" class="form-control" name="fname" value="{{inputs.search_bar}}">
+              <input type="hidden" form="search_bar_page" id="fname" class="form-control" name="fname" value="{{inputs.search_bar}}">
       
               <input type="submit" class="btn btn-default" id="search"> 
-              <input type="hidden" name="user_id" value="11">
+              <input type="hidden" name="user_id" value="11"> 
+              <input type="hidden" form="search_bar_page" name="user_id" value="11">
               <div id="filterarea" class="filterarea">
                     <div class="row" >
                       <div class="col-sm-2"> 
                         <h4 class="filterhead">  Hourly rate </h4>
                         <div>
-                          <input type="checkbox" name="hourlyrate1" >
+                          <input type="checkbox" style="display: none;" {% if inputs.hourlyrate1 %}  form="search_bar_page" type="checkbox" name="hourlyrate1"  checked {% endif %} >
+                          <input type="checkbox" name="hourlyrate1" {% if inputs.hourlyrate1 %} checked  {% endif %} >
                           <label>  > $5 </label>
                         </div>                        
                         <div>
-                          <input type="checkbox" name="hourlyrate2" >
+                          <input type="checkbox" style="display: none;"  {% if inputs.hourlyrate2 %} form="search_bar_page" type="checkbox" name="hourlyrate2" checked   {% endif %} >
+                          <input type="checkbox" name="hourlyrate2" {% if inputs.hourlyrate2 %} checked  {% endif %} >
                           <label>  $5 -$10 </label>
                         </div>                        
                         <div>
-                          <input type="checkbox" name="hourlyrate3" >
+                          <input type="checkbox" style="display: none;"  {% if inputs.hourlyrate3 %}   form="search_bar_page" type="checkbox" name="hourlyrate3" checked  {% endif %}>
+                          <input type="checkbox" name="hourlyrate3" {% if inputs.hourlyrate3 %} checked  {% endif %}>
                           <label>   $10 - $100 </label>
                         </div>                        
                         <div>
-                          <input type="checkbox" name="hourlyrate4" >
+                          <input type="checkbox"  style="display: none;"  {% if inputs.hourlyrate4 %}  form="search_bar_page" type="checkbox" name="hourlyrate4" checked {% endif %}>
+                          <input type="checkbox" name="hourlyrate4" {% if inputs.hourlyrate4 %} checked  {% endif %}>
                           <label>  $100< </label>
                         </div>                        
                       </div>
@@ -117,26 +131,31 @@
                       <div class="col-sm-2"> 
                         <h4 class="filterhead">  Talent </h4>
                         <div>
-                          <input type="checkbox" name="Beginner" value="ok">
+                          <input type="checkbox"  style="display: none;" {% if inputs.Beginner %} form="search_bar_page" type="checkbox" name="Beginner"  value="on"  checked{% endif %}>
+                          <input type="checkbox" name="Beginner" value="ok" {% if inputs.Beginner %} checked  {% endif %}>
                           <label>  > Beginner</label>
                         </div>                        
                         <div>
-                          <input type="checkbox" name="Intermediate" value="ok">
+                          <input type="checkbox" style="display: none;"  {% if inputs.Intermediate %}  form="search_bar_page" type="checkbox" name="Intermediate" checked    {% endif %}>
+                          <input type="checkbox" name="Intermediate" value="ok" {% if inputs.Intermediate %} checked  {% endif %}>
                           <label>  Intermediate </label>
                         </div>                        
                         <div>
-                          <input type="checkbox" name="Expert" value="ok">
+                          <input type="checkbox" style="display: none;"  {% if inputs.Expert %}  form="search_bar_page" type="checkbox" name="Expert" value="ok"  checked {% endif %}>
+                          <input type="checkbox" name="Expert" value="ok" {% if inputs.Expert %} checked  {% endif %}>
                           <label>   Expert </label>
                         </div>                        
                         <div>
-                          <input type="checkbox" name="Super Expert" value="ok">
+                          <input type="checkbox" style="display: none;" {% if inputs.Super_Expert %}  form="search_bar_page" type="checkbox" name="Super Expert" value="ok" checked  {% endif %}>
+                          <input type="checkbox" name="Super Expert" value="ok" {% if inputs.Super_Expert %} checked  {% endif %}>
                           <label>  Super Expert </label>
                         </div>                                    
                       </div>
                       <div class="col"> </div>
                       <div class="col-sm-2" style="width:200px; "> 
                         <h4 class="filterhead">  Locations </h4>
-                        <input list="brow" name="location">
+                        <input type="hidden" form="search_bar_page" list="brow" name="location" value="{{inputs.location}}">
+                        <input list="brow" name="location" value="{{inputs.location}}">
                         <datalist id="brow">
                           
                         {% for i in  locations  %}
@@ -148,7 +167,8 @@
                         <div class="col"> </div>
                         <div class="col-sm-2" style="width:200px;"> 
                           <h4 class="filterhead">  Language </h4>
-                          <input list="lan" name="language">
+                          <input type="hidden" form="search_bar_page" list="lan" name="language" value="{{inputs.language}}">
+                          <input list="lan" name="language" value="{{inputs.language}}">
                           <datalist id="lan">
 
                             {% for i in  language_list_ht  %}
@@ -227,8 +247,44 @@
               </div>
             </div>
                 {% endfor %}
+
+
+
           </div>     
-      </div>
+
+<div class="container">
+
+
+  {% if inputs.prepage %}
+
+
+  <input form="search_bar_page" class="btn btn-primary" name="page" value="{{inputs.prepage}}" type="submit" style="float: left;">   
+  
+{% endif %}
+
+
+{% if inputs.nextpage %}
+
+  <input form="search_bar_page" class="btn btn-primary" name="page" value="{{inputs.nextpage}}" type="submit" style="float: right;"> 
+
+{% endif %}
+
+{%  if inputs.section %}
+
+<input type="hidden" form="search_bar_page" name="section"  value="{{inputs.section}}">
+{% endif %}
+
+<form id="search_bar_page" action="search">
+
+</form>
+
+
+</div>
+</div>
+
+
+
+</div>
   </div> 
 
 <script>
@@ -349,6 +405,8 @@ function addfilter() {
 
 
 </script>
-   
+
+
+
 </body>
 </html> 

@@ -24,6 +24,5 @@ urlpatterns = [
    path('', views.index , name='index'),
    path('message', views.message , name='message'),
    path('search', views.search , name='search'),
-   path('search_segment', views.search_segment , name='search_segment'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
