@@ -205,8 +205,9 @@
                     <ul class="card-desi">
                       <li>
                       <div > 
-                        <img width=100 height=100 class="card-img"  src="{% static 'download.jpg' %}"> 
+                        <img width=100 height=100 class="card-img"  src="media/{{ i.image}}"> 
                       </div>
+                      {{ i.images.url }}
                       </li>
                       <li>
                         <div class="container-fluid"><!-- content -->
@@ -214,6 +215,13 @@
                           <hr>
                           <h4 class="card-description"> {{ i.position  }}   </h4>
                           <div class="container-fluid">
+                            <form action="chat">
+                              <input name="receiver" type="hidden" value="{{i.user_id}}" > 
+                              <input type="submit" value="chat">
+                              
+                            </form>
+                            {{i.user_id }}
+
                             <div class="container-fluid">
                               <ul id="skilllist">
                                 <li> <h4 class="card-skill"> Skill: </h4></li>

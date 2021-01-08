@@ -142,7 +142,6 @@ class Profile(models.Model):
     bio = models.CharField(max_length=1000, blank=True, null=True)
     user = models.ForeignKey('User', models.DO_NOTHING)
     language = models.CharField(max_length= 45 , default= "English" , blank= False)
-
     class Meta:
         managed = False
         db_table = 'profile'
@@ -205,3 +204,8 @@ class filter_details(models.Model) :
     class Meta : 
         db_table = 'filter_details'
 
+class image(models.Model) :
+    image = models.ImageField(upload_to='cars' ,  blank=True )
+    user =  models.ForeignKey('User' , on_delete= models.CASCADE)
+    class Meta : 
+        db_table = 'images'

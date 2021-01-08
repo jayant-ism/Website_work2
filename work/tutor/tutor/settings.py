@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'basic' ,
-    'django.core.paginator',
+    'chat',
+    'widget_tweaks',
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -57,7 +60,7 @@ ROOT_URLCONF = 'tutor.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates' ) ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,3 +140,10 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'template'),
 )
 
+# config/settings.py
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/' # new
+
+
+MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

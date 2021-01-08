@@ -1,32 +1,23 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse
-from .models import Profile  , Country  , State , User , language_list 
+from .models import Profile  , Country  , State , User , language_list , image
 from itertools import chain
 import json
 from django.core.paginator import Paginator
+from django import template
 # Create your views here.
 
 
-def index(request) : 
-    st = Profile.objects.all()
-    # use the query 
-    # select profile.id, first_name ,  last_name , experience , profile.user_id , current_position , state , country , skills   from profile  , country , state , skill  where profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id   ;
-
-
-    asd =  Profile.objects.raw(" select profile.id, first_name ,  last_name , experience , profile.user_id , current_position , state , country , skills   from profile  , country , state , skill  where profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id  ;")
-    for i in asd : 
-        i.skill =  json.loads( i.skills )
-        print( type (  json.loads( i.skills ) ) )
-    #select profile.id, first_name ,  last_name , experience , profile.user_id , current_position , state , country , skills   from profile  , country , state , skill , filter_details  where profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = filter_details.user_id and filter_details.language like "E%";
-
+def index(request , user_id) : 
+    request.session['userid'] = user_id
+    return redirect('search')
     return render( request , 'index.html' , {'se' : asd })
 def search(request) :
     
-    user_id = request.GET.get('user_id')
+    user_id = str(  request.session['userid'] )
     #print(user_id)
     user_type =  User.objects.raw(" select id , role_id from user where id = " + user_id + "  ; ")
-    
-    
+     
     for i in user_type : 
         type_user =  i.role_id 
         #print(i.role_id )   
@@ -35,9 +26,9 @@ def search(request) :
 
 
     
-    required_string = "profile.id, profile.first_name ,  profile.last_name , profile.experience , profile.user_id , profile.current_position , state.state , country.country , skill.skills " 
-    tables_used = " profile  , country , state , skill , user ,  filter_details "
-    condition_string = "profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = user.id  and  filter_details.user_id = profile.user_id  " 
+    required_string = "profile.id, profile.first_name , images.image  ,  profile.last_name , profile.experience , profile.user_id , profile.current_position , state.state , country.country , skill.skills " 
+    tables_used = " images , profile  , country , state , skill , user ,  filter_details "
+    condition_string = "profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = user.id  and  filter_details.user_id = profile.user_id  and  filter_details.user_id = images.user_id " 
     #set user type 
     user_type = int( type_user ) 
     user_type = 1 + (user_type )%2  
@@ -145,16 +136,19 @@ def search(request) :
 
 
     # add the search string 
+    fname = request.GET.get('fname')
+    if fname is None : 
+        fname = '' 
 
 
-    search_string = " and (  profile.first_name  REGEXP '" + "^" + request.GET.get('fname') + "' or  profile.last_name REGEXP '^" + request.GET.get('fname') +"' "  +   " or LOWER( skill.skills ) REGEXP LOWER ( '" + request.GET.get('fname') + "' )" + ")" 
+    search_string = " and (  profile.first_name  REGEXP '" + "^" + fname + "' or  profile.last_name REGEXP '^" + fname +"' "  +   " or LOWER( skill.skills ) REGEXP LOWER ( '" + fname + "' )" + ")" 
 
     # add the skill string 
 
 
 
 
-    if request.GET.get('fname') == '' :
+    if fname == '' :
         search_string = ""
     print(condition_string)
 
@@ -172,7 +166,7 @@ def search(request) :
         pgno = int(request.GET.get('page') )
     except :
         pgno  = 1 
-    data = Paginator(bsd  , 10 )
+    data = Paginator(bsd  , 2 )
     asd = data.page(pgno)
 
 
@@ -198,7 +192,7 @@ def search(request) :
 
     inputs = {}
     try : 
-        inputs['search_bar']   =  request.GET.get('fname')
+        inputs['search_bar']   =  fname
     except : 
         inputs['search_bar'] =''
         
@@ -258,7 +252,6 @@ def search(request) :
             inputs['Super_Expert'] = 0 
     except : 
         inputs['Super_Expert'] = 0
-        
     try : 
          inputs['location'] =  request.GET.get('location')
     except : 
@@ -267,6 +260,11 @@ def search(request) :
         inputs['language'] = request.GET.get('language')
     except : 
         inputs['language'] =''
+    if inputs['language'] == None : 
+        inputs['language'] = '' 
+    if inputs['location'] == None : 
+        inputs['location'] = ''
+    
     try :
         inputs['section'] = request.GET.get('section')
     except :
@@ -289,13 +287,4 @@ def search(request) :
         inputs['prepage'] = None 
 
     return render( request , 'index.html' , {'inputs':inputs , 'se' : asd , 'type' : type_user , 'locations' : locations , 'language_list_ht' : language_list_ht ,'pre' :   hourly_query  + talent_query + search_string    })
-
-
-
-
-
-
-def message(request) : 
-    return render(request , 'message.html')
-
 
