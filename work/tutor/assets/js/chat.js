@@ -19,28 +19,57 @@ function scrolltoend() {
         scrollTop: $('#board')[0].scrollHeight
     }, 800);
 }
+var time = 0 ; 
 
-function send(sender, receiver, message) {
-    $.post('/api/messages', '{"sender": "' + sender + '", "receiver": "' + receiver + '","message": "' + message + '" }', function (data) {
-        console.log(data);
+function send(sender, receiver, message , message_type) {
+    var token = '{{csrf_token}}';
+    data = '{"sender": ' + sender + ', "receiver": ' + receiver + ',"message": "' + message +  '" }'
+    console.log(data) ; 
+    $.ajax({
+      type: "POST",
+      url: '/api/messages',
+      data: data,
+      success: function (data) {
+
         var box = text_box.replace('{sender}', "You");
         box = box.replace('{message}', message);
         $('#board').append(box);
         scrolltoend();
-    })
+        console.log(time) ; 
+        if ( time < data.id)
+        {
+            time =  data.id ;
+        }
+
+    }
+
+    });
+
 }
 
-function receive() {
-    $.get('/api/messages/' + sender_id + '/' + receiver_id, function (data) {
-        console.log(data);
+function uploads(sender , receiver , message ,  message_type ) {
+
+}
+
+function receive(sender, receiver , trail ) {
+
+    $.get('/api/messages/' + sender + '/' + receiver+'/' + time + '/'  + trail , function (data) {
         if (data.length !== 0) {
             for (var i = 0; i < data.length; i++) {
                 console.log(data[i]);
                 var box = text_box.replace('{sender}', data[i].sender);
                 box = box.replace('{message}', data[i].message);
-                box = box.replace('right', 'left blue lighten-5');
-                $('#board').append(box);
+                console.log(parseInt(data[i].sender) ) ;
+                console.log( parseInt(receiver));
+                if(parseInt(data[i].sender) == parseInt(receiver) )
+                {
+                    box = box.replace('right', 'left blue lighten-5');
+                }$('#board').append(box);
                 scrolltoend();
+                if ( time < data[i].id)
+                {
+                    time =  data[i].id ;
+                }
             }
         }
     })
@@ -62,8 +91,8 @@ function getUsers(senderId, callback) {
     })
 }
 
-function register(username, password) {
-    $.post('/api/users', '{"username": "' + username + '", "password": "' + password + '"}',
+function register(username, password , email , role_id) {
+    $.post('/api/users', '{"username": "' + username + '", "password": "' + password + '", "email_id": "' + email + '", "role": "' + role_id + '"}',
         function (data) {
             console.log(data);
             window.location = '/';
@@ -71,3 +100,11 @@ function register(username, password) {
             $('#id_username').addClass('invalid');
         })
 }
+
+/* for upload */
+
+// AJAX for posting
+function create_post() {
+    console.log("create post is working!") // sanity check
+    console.log($('#post-text').val())
+};

@@ -8,7 +8,9 @@ class Message(models.Model) :
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read =  models.BooleanField(default=False )
     id = models.AutoField(primary_key=True)
+    message_type = models.CharField(default="text" , max_length=10)
     def __str__(self) : 
         return self.message
     class Meta : 
         ordering  = ('timestamp',) 
+

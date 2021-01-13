@@ -3,6 +3,14 @@ const text_box = '<div class="card-panel right" style="width: 75%; position: rel
     '{message}' +
     '</div>';
 
+const image_box = '<div class="card-panel right" style="width: 75%; position: relative">' +
+'<div style="position: absolute; top: 0; left:3px; font-weight: bolder" class="title">{sender}</div>' +
+' <a href="{message}" download > message_icon </a> '+
+'' +
+'</div>';
+
+
+
 let userState = ''
 
 const userDiv = (senderId, receiverId, name, online) =>
@@ -21,11 +29,16 @@ function scrolltoend() {
 }
 var time = 0 ; 
 
-function send(sender, receiver, message) {
+function send(sender, receiver, message , message_type) {
     var token = '{{csrf_token}}';
-         
-    $.post('/api/messages', '{"sender": ' + sender + ', "receiver": ' + receiver + ',"message": "' + message + '" }', function (data) {
-        console.log(data);
+    data = '{"sender": ' + sender + ', "receiver": ' + receiver + ',"message": "' + message +  '" }'
+    console.log(data) ; 
+    $.ajax({
+      type: "POST",
+      url: '/api/messages',
+      data: data,
+      success: function (data) {
+
         var box = text_box.replace('{sender}', "You");
         box = box.replace('{message}', message);
         $('#board').append(box);
@@ -35,31 +48,64 @@ function send(sender, receiver, message) {
         {
             time =  data.id ;
         }
-    
-    })
+
+    }
+
+    });
+
 }
- 
+
+function uploads(sender , receiver , message ,  message_type ) {
+
+}
 
 function receive(sender, receiver , trail ) {
 
     $.get('/api/messages/' + sender + '/' + receiver+'/' + time + '/'  + trail , function (data) {
-        console.log(data);
         if (data.length !== 0) {
             for (var i = 0; i < data.length; i++) {
                 console.log(data[i]);
-                var box = text_box.replace('{sender}', data[i].sender);
-                box = box.replace('{message}', data[i].message);
-                console.log(parseInt(data[i].sender) ) ;
-                console.log( parseInt(receiver));
-                if(parseInt(data[i].sender) == parseInt(receiver) )
-                {
-                    box = box.replace('right', 'left blue lighten-5');
-                }$('#board').append(box);
-                scrolltoend();
-                if ( time < data[i].id)
-                {
-                    time =  data[i].id ;
+
+
+
+                if(data[i].message_type == 'text') {
+                    var box = text_box.replace('{sender}', data[i].sender);
+                    box = box.replace('{message}', data[i].message);
+                    console.log(parseInt(data[i].sender) ) ;
+                    console.log( parseInt(receiver));
+                    if(parseInt(data[i].sender) == parseInt(receiver) )
+                    {
+                        box = box.replace('right', 'left blue lighten-5');
+                    }$('#board').append(box);
+                    scrolltoend();
+                    if ( time < data[i].id)
+                    {
+                        time =  data[i].id ;
+                    }
+                
+                } else {
+
+
+                    var box = image_box.replace('{sender}', data[i].sender);
+                    box = box.replace('{message}', data[i].message);
+                    console.log(parseInt(data[i].sender) ) ;
+                    console.log( parseInt(receiver));
+                    if(parseInt(data[i].sender) == parseInt(receiver) )
+                    {
+                        box = box.replace('right', 'left blue lighten-5');
+                    }$('#board').append(box);
+                    scrolltoend();
+                    if ( time < data[i].id)
+                    {
+                        time =  data[i].id ;
+                    }
+
+
+
+
+
                 }
+
             }
         }
     })
@@ -90,3 +136,24 @@ function register(username, password , email , role_id) {
             $('#id_username').addClass('invalid');
         })
 }
+
+/* for upload */
+
+// AJAX for posting
+function create_post( sender  , receiver , formData ) {
+
+    $.ajax({
+        url: "uploadfilechat",
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+            alert(data.url )
+            send(sender, receiver, data.url , "file")
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+
+
+};

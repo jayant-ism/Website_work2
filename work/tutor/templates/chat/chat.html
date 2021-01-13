@@ -10,6 +10,9 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/chat.js' %}"></script>
+        <script src="{% static 'css/dropzone.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/dropzone.css' %}">
+
     </head>
     <body>
     <nav class="blue lighten-3">
@@ -23,15 +26,29 @@
     </nav>
 
     <script>
-    function ok(){
-
-    document.getElementById("board").innerHTML = "";
-    }
+    function ok(){ document.getElementById("board").innerHTML = "";}
     </script>
 
 <div class="container upload_details">
-    <div> <button  class="upload_button"> Upload </button></div>
+    <div> 
+        
+        <!-- <button  class="upload_button"> Upload </button> 
+        -->
+
+
+        <form id="post-form" name = "post-text"   action="uploadfilechat" enctype = "multipart/form-data"  method = "POST" >{% csrf_token %}
+            <input id="post-text" name="post-text" type="file">
+            <input name="sender" value="{{sender}}" type="hidden">
+            <input name="receive" value="{{receiver}}" type="hidden">
+            <input type="submit">
+
+        </form>
+  
+    
+    </div>
 </div>
+
+
 <div class="container"> 
         <div class="section" style="height: 80vh">
     <div class="row">
@@ -94,18 +111,31 @@
             $('#chat-box').on('submit', function (event) {
                 event.preventDefault();
                 var message = $('#id_message');
-                send({{sender}}, {{receiver}}, message.val()); //Send function will be defined within 'chat.js'
+                send({{sender}}, {{receiver}}, message.val() ,"text"); //Send function will be defined within 'chat.js'
                 message.val(''); //Clear content of the the input field after sending
             })
+
+
+        $("#post-form").on("submit" ,  function(e){
+            event.preventDefault();
+            console.log("form submitted!")  // sanity check
+            var formData = new FormData(this);
+            create_post( {{sender}}, {{receiver}} , formData );
+
+         }) 
+        
+
+
+
+
         })
-
         receive({{sender}} , {{receiver}} , 0 )  ;
-
         window.setInterval(function(data){
   /// call your function here
-
   receive({{sender}} , {{receiver}} , 1) ;
-}, 5000);
+}, 50000);
+
+
 
 
         </script>
