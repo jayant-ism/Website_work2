@@ -1,5 +1,4 @@
 from django.db import models
-from basic.models import User
 
 class Message(models.Model) : 
     sender =models.CharField(max_length= 1200)

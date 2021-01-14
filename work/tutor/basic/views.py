@@ -1,6 +1,6 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse
-from .models import Profile  , Country  , State , User , language_list , image
+from .models import Profile  , Country  , State  , language_list
 from itertools import chain
 import json
 from django.core.paginator import Paginator

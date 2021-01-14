@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from basic.models import User
+#from basic.models import User
 from django.contrib.auth import authenticate, login #Django's inbuilt authentication methods
 from django.http.response import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
@@ -7,7 +7,7 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
 from rest_framework.parsers import JSONParser
 from chat.models import Message 
-from chat.serializers import Messageserilizer, Userserializer
+from chat.serializers import Messageserilizer
 import json
 from datetime import date, time, datetime
 
