@@ -6,10 +6,11 @@ from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
 from rest_framework.parsers import JSONParser
-from chat.models import Message 
+from basic.models import Message 
 from chat.serializers import Messageserilizer
 import json
 from datetime import date, time, datetime
+from basic.models import user_details
 
 
 
@@ -58,7 +59,7 @@ def message_list(request, sender=None , receiver = None , viewss=None , idst = N
 def chat_view(request):
     if request.method == "GET":
         return render(request, 'chat/chat.html',
-                      {'users': User.objects.exclude(id=request.session['userid'] ), 'sender' : request.session['userid'] , 'receiver' : request.GET.get('receiver')  }) #Returning context for all users except the current logged-in user
+                      {'users': user_details.objects.exclude(id=request.session['userid'] ), 'sender' : request.session['userid'] , 'receiver' : request.GET.get('receiver')  }) #Returning context for all users except the current logged-in user
 
 
 
@@ -68,6 +69,16 @@ def uploadfilechat(request) :
     
 
     file_field=request.FILES['post-text']
+    file_name = request.FILES['post-text'].name
+
+    extension = '' 
+    file_name = reversed(file_name)  
+    for i in file_name : 
+        extension  = i + extension
+        if i == '.' : 
+            break  
+
+
     with open('media/storage/number.json') as json_file:
 
 
@@ -78,7 +89,7 @@ def uploadfilechat(request) :
     asd = int(asd) 
     asd = asd + 1 
     asd = str(  asd )  
-    filename = 'media/storage/filenamess' + asd + '.py' 
+    filename = 'media/storage/filenamess' + asd + extension 
     with open( filename ,  'wb+') as destination :   
         for chunk in file_field.chunks():
             destination.write(chunk)

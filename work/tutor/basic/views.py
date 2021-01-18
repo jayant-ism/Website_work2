@@ -1,6 +1,6 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse
-from .models import Profile  , Country  , State  , language_list
+from .models import user_details , country  , language_list
 from itertools import chain
 import json
 from django.core.paginator import Paginator
@@ -16,24 +16,26 @@ def search(request) :
     
     user_id = str(  request.session['userid'] )
     #print(user_id)
-    user_type =  User.objects.raw(" select id , role_id from user where id = " + user_id + "  ; ")
+    usersd = " select id , role from user_details where id = " + user_id + "  ; "
+    print(usersd)
+    user_type =  user_details.objects.raw(usersd )
      
     for i in user_type : 
-        type_user =  i.role_id 
-        #print(i.role_id )   
+        type_user =  i.role 
+        #print(i.role )   
 
     #we got the user type 
 
-
-    
-    required_string = "profile.id, profile.first_name , images.image  ,  profile.last_name , profile.experience , profile.user_id , profile.current_position , state.state , country.country , skill.skills " 
-    tables_used = " images , profile  , country , state , skill , user ,  filter_details "
-    condition_string = "profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = user.id  and  filter_details.user_id = profile.user_id  and  filter_details.user_id = images.user_id " 
+    required_string = " * " 
+    tables_used = " user_details "
+    condition_string = ""
     #set user type 
     user_type = int( type_user ) 
     user_type = 1 + (user_type )%2  
     user_type  = str(  user_type )
-    condition_string = condition_string  + " and user.role_id =  " + user_type + " " 
+    condition_string = condition_string  + "  role =  " + user_type + " " 
+
+    #we need the details of only user type 
 
     #set the hourly rate 
     hourly_query = ""
@@ -44,7 +46,7 @@ def search(request) :
 
         add_on = 1  
 
-        hourly_query = hourly_query + " ( filter_details.hourly_rate < 5  )  " 
+        hourly_query = hourly_query + " ( rate < 5  )  " 
     
     
     if  request.GET.get('hourlyrate2')  :
@@ -53,7 +55,7 @@ def search(request) :
 
         add_on = 1  
 
-        hourly_query = hourly_query + " ( filter_details.hourly_rate  >=  5 and filter_details.hourly_rate  < 10  )  " 
+        hourly_query = hourly_query + " ( rate  >=  5 and rate  < 10  )  " 
     
     
     if  request.GET.get('hourlyrate3')  :
@@ -62,7 +64,7 @@ def search(request) :
 
         add_on = 1  
 
-        hourly_query = hourly_query + " ( filter_details.hourly_rate >= 10 and filter_details.hourly_rate  < 100    )  " 
+        hourly_query = hourly_query + " ( rate >= 10 and rate  < 100    )  " 
     
     
     if  request.GET.get('hourlyrate4')  :
@@ -71,7 +73,7 @@ def search(request) :
 
         add_on = 1  
 
-        hourly_query = hourly_query + " ( filter_details.hourly_rate >= 100  )  " 
+        hourly_query = hourly_query + " ( rate >= 100  )  " 
     
     
 
@@ -83,13 +85,13 @@ def search(request) :
     #now add the value of the location
 
     if request.GET.get('location') : 
-        condition_string = condition_string + "  and  " + "  filter_details.location = " + " '" + request.GET.get('location') + "' " 
+        condition_string = condition_string + "  and  " + "  country = " + " '" + request.GET.get('location') + "' " 
 
 
     #now add the value of the language
 
     if request.GET.get('language') : 
-        condition_string = condition_string + "  and  " + "  filter_details.language = " + " '" + request.GET.get('language') + "' " 
+        condition_string = condition_string + "  and  " + "  language = " + " '" + request.GET.get('language') + "' " 
 
     #now add the value of the talent 
 
@@ -102,7 +104,7 @@ def search(request) :
 
         add_on = 1  
 
-        talent_query = talent_query + " ( filter_details.talent = 'Beginner' )  " 
+        talent_query = talent_query + " ( level = 1 )  " 
     
     if  request.GET.get('Intermediate')  :
         if add_on == 1 : 
@@ -110,7 +112,7 @@ def search(request) :
 
         add_on = 1  
 
-        talent_query = talent_query + " ( filter_details.talent = 'Intermediate' )  " 
+        talent_query = talent_query + " ( level = 2)  " 
     
     if  request.GET.get('Expert')  :
         if add_on == 1 : 
@@ -118,14 +120,14 @@ def search(request) :
 
         add_on = 1  
 
-        talent_query = talent_query + " ( filter_details.talent = 'Expert' )  " 
+        talent_query = talent_query + " ( level = 3 )  " 
     if  request.GET.get('Super Expert')  :
         if add_on == 1 : 
             talent_query = talent_query + " or " 
 
         add_on = 1  
 
-        talent_query = talent_query + " ( filter_details.talent = 'Super Expert' )  " 
+        talent_query = talent_query + " ( level = 4 )  " 
     
     
 
@@ -139,10 +141,12 @@ def search(request) :
     fname = request.GET.get('fname')
     if fname is None : 
         fname = '' 
-
-
-    search_string = " and (  profile.first_name  REGEXP '" + "^" + fname + "' or  profile.last_name REGEXP '^" + fname +"' "  +   " or LOWER( skill.skills ) REGEXP LOWER ( '" + fname + "' )" + ")" 
-
+    fname = fname.lower()
+    if user_type == 1 : 
+        search_string = " and (  LOWER (first_name  ) REGEXP '" + "^" + fname + "' or LOWER (  last_name ) REGEXP '^" + fname +"' "  +   " or LOWER( seek_skills ) REGEXP LOWER ( '" + fname + "' )" + ")" 
+    else  :
+        search_string = " and (  LOWER (first_name  )  REGEXP '" + "^" + fname + "' or LOWER(  last_name ) REGEXP  '^" + fname +"' "  +   " or LOWER( teach_skills ) REGEXP LOWER ( '" + fname + "' )" + ")" 
+        
     # add the skill string 
 
 
@@ -150,16 +154,18 @@ def search(request) :
 
     if fname == '' :
         search_string = ""
-    print(condition_string)
 
     cla = request.GET.get('section') 
     if cla != None :
-        search_string = search_string   + " and skill.skill_description = '" + cla + "'"
+        if user_type ==  1 : 
+            search_string = search_string   + " and seek_designation = '" + cla + "'"
+        else :
+            search_string = search_string   + " and teach_designation = '" + cla + "'"
 
 
     query_string = " select  " + required_string + "  from  "  +  tables_used + " where  "  + condition_string + hourly_query  + talent_query + search_string + " ; "
     print(query_string)
-    bsd =  Profile.objects.raw( query_string )
+    bsd =  user_details.objects.raw( query_string )
 
     pgno = 1
     try : 
@@ -172,18 +178,15 @@ def search(request) :
 
     if asd != None : 
         for i in asd : 
-            if i.skills == None : 
-                i.skill = {}
-                continue  
-            i.skill =  json.loads( i.skills )
-        #print( type (  json.loads( i.skills ) ) )
-    #select profile.id, first_name ,  last_name , experience , profile.user_id , current_position , state , country , skills   from profile  , country , state , skill , filter_details  where profile.country_id = country.id and profile.state_id = state.id and profile.skill_id = skill.id and profile.user_id = filter_details.user_id and filter_details.language like "E%";
-    
-    #paginator tesst 
+            if user_type == 1 : 
+                if i.teach_skills == None : 
+                    i.skill = {}
+                    continue  
+                print(i.teach_skills)
+                i.skill =  i.teach_skills
 
 
-
-    locations = Country.objects.all()
+    locations = country.objects.all()
     language_list_ht =  language_list.objects.all()
 
 

@@ -1,22 +1,16 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+
 from django.db import models
 
-
-
-#new  
-
 class user_login(models.Model) : 
-    id  = models.IntegerField(primary_key=True  , blank = False , auto_created=True ) ,
-    first_name = models.CharField(max_length=15 , blank= False ) ,
-    last_name = models.CharField(max_length=15 , blank= False ) ,
-    email_id =models.CharField(max_length=15 , blank= False ) ,
-    pwd = models.CharField(max_length=15 , blank= False ) ,
+    id  = models.IntegerField(primary_key=True  , blank = False , auto_created=True ) 
+    first_name = models.CharField(max_length=15 , blank= False ) 
+    last_name = models.CharField(max_length=15 , blank= False ) 
+    email_id =models.CharField(max_length=15 , blank= False ) 
+    pwd = models.CharField(max_length=15 , blank= False ) 
+
+    class Meta:
+        db_table = 'user_login'
+
 
 class class_details(models.Model) : 
     class_id = models.IntegerField(primary_key=True  , auto_created=True)
@@ -28,15 +22,15 @@ class class_details(models.Model) :
 #lookup tables 
 
 class level(models.Model) : 
-    level =  models.CharField(max_length=15 , blank= False ) ,
+    level =  models.CharField(max_length=15 , blank= False ) 
     id = models.IntegerField(primary_key=True)
 
 class rating(models.Model) : 
-    rating =  models.CharField(max_length=15 , blank= False ) ,
+    rating =  models.CharField(max_length=15 , blank= False ) 
     id = models.IntegerField(primary_key=True)
 
 class designation(models.Model) : 
-    level =  models.CharField(max_length=15 , blank= False ) ,
+    level =  models.CharField(max_length=15 , blank= False ) 
     id = models.IntegerField(primary_key=True)
 
 
@@ -47,13 +41,6 @@ class language_list(models.Model) :
     class Meta : 
         db_table = 'language_list'
 
-
-class Country(models.Model):
-    country = models.CharField(max_length=45, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'country'
 
 #connect 
 
@@ -77,60 +64,70 @@ class connect(models.Model):
 #main
 
 
+class country(models.Model):
+    country = models.CharField(max_length=45, blank=True, null=True)
 
-class Profile(models.Model):
-    first_name = models.CharField(max_length=45)
-    last_name = models.CharField(max_length=45)
-    country_id = models.IntegerField(blank=True, null=True)
-    state_id = models.IntegerField(blank=True, null=True)
-    mobile_number = models.CharField(max_length=10, blank=True, null=True)
-    skype_id = models.CharField(max_length=45, blank=True, null=True)
-    skill_id = models.IntegerField(blank=True, null=True)
-    experience = models.CharField(max_length=45, blank=True, null=True)
-    current_position = models.CharField(max_length=45, blank=True, null=True)
-    portfolio_link = models.CharField(max_length=100, blank=True, null=True)
-    hours_per_week = models.CharField(max_length=45, blank=True, null=True)
-    resume_url = models.CharField(max_length=100, blank=True, null=True)
-    bio = models.CharField(max_length=1000, blank=True, null=True)
-    user = models.ForeignKey('User', models.DO_NOTHING)
-    language = models.CharField(max_length= 45 , default= "English" , blank= False)
     class Meta:
-        managed = False
-        db_table = 'profile'
+        db_table = 'country'
+        
 
 
-class Skill(models.Model):
+
+# needed
+
+
+
+
+
+class user_details (models.Model) : 
+    id = models.IntegerField(primary_key=True , auto_created=True )
+    first_name = models.CharField(max_length=15, default=None , blank= False )
+    last_name= models.CharField(max_length=15 , default=None , blank= False  )
+    phone = models.DecimalField( max_digits=10 , decimal_places= 0 , default=None  )
+    address = models.CharField(max_length=15 , default=None , blank= False )
+    role = models.IntegerField( default=0 )
+    seek_designation = models.CharField(max_length=15 , default=None , blank= False )
+    teach_designation = models.CharField(max_length=15 , default=None , blank= False )
+    seek_skills = models.JSONField()
+    teach_skills = models.JSONField()
+    country = models.CharField(max_length= 45 , default='India' , blank= False  )
+    rate = models.DecimalField( max_digits = 5 , decimal_places= 4 , default=1  )
+    rating = models.IntegerField( default=1 )
+    level = models.IntegerField(default=1)
+    image = models.FileField(upload_to='profile_images' , blank =True)
+    language  =  models.CharField(blank=True ,max_length= 45)
+
+    class Meta:
+        db_table = 'user_details'
+
+
+class skill(models.Model):
     skill_name = models.CharField(max_length=45, blank=True, null=True)
     skill_description = models.CharField(max_length=45, blank=True, null=True)
-    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(user_details, models.DO_NOTHING, blank=True, null=True)
     skills = models.JSONField()
 
     class Meta:
-        managed = False
         db_table = 'skill'
 
 
-class State(models.Model):
-    state = models.CharField(max_length=45, blank=True, null=True)
-    country = models.ForeignKey(Country, models.DO_NOTHING, blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'state'
 
-class user(models.Model) : 
-    id = models.IntegerField(primary_key=True)
-    first_name = models.CharField(max_length=15)
-    last_name= models.CharField(max_length=15)
-    phone = models.DecimalField( max_digits=10 , decimal_places= 0  )
-    address = models.CharField(max_length=15)
-    role = models.CharField(max_length=15)
-    seek_designation = models.CharField(max_length=15)
-    teach_designation = models.CharField(max_length=15)
-    seek_skills = models.JSONField()
-    teach_skills = models.JSONField()
-    country = models.IntegerField()
-    rate = models.DecimalField( max_digits = 5 , decimal_places= 4 )
-    rating = models.IntegerField()
-    level = models.IntegerField()
-    image = models.CharField(max_length=15)
+
+
+
+
+class Message(models.Model) : 
+    sender =models.CharField(max_length= 1200)
+    receiver = models.CharField(max_length= 1200)
+    message = models.CharField(max_length= 1200)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read =  models.BooleanField(default=False )
+    id = models.AutoField(primary_key=True)
+    message_type = models.CharField(default="text" , max_length=10)
+    def __str__(self) : 
+        return self.message
+    class Meta : 
+        ordering  = ('timestamp',) 
+
+

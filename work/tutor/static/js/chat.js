@@ -31,15 +31,20 @@ var time = 0 ;
 
 function send(sender, receiver, message , message_type) {
     var token = '{{csrf_token}}';
+
+
     data = '{"sender": ' + sender + ', "receiver": ' + receiver + ',"message": "' + message +  '" }'
     console.log(data) ; 
+    if ( message_type == 'text ') {
     $.ajax({
       type: "POST",
       url: '/api/messages',
       data: data,
       success: function (data) {
 
-        var box = text_box.replace('{sender}', "You");
+        var box = text_box.replace('{sender}', sender );
+
+    
         box = box.replace('{message}', message);
         $('#board').append(box);
         scrolltoend();
@@ -52,6 +57,23 @@ function send(sender, receiver, message , message_type) {
     }
 
     });
+}else 
+{
+    var box = image_box.replace('{sender}', sender );
+
+    
+    box = box.replace('{message}', message);
+    $('#board').append(box);
+    scrolltoend();
+    console.log(time) ; 
+    if ( time < data.id)
+    {
+        time =  data.id ;
+    }
+
+
+}
+
 
 }
 

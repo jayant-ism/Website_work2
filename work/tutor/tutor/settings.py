@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'tutor.wsgi.application'
 DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.mysql',
-'NAME': 'work_2',
+'NAME': 'work',
 'USER': 'jayant',
 'PASSWORD': 'Jayant@2001',
 'HOST': '',
