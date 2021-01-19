@@ -149,13 +149,12 @@ def search(request) :
         
     # add the skill string 
 
-
-
-
     if fname == '' :
         search_string = ""
 
     cla = request.GET.get('section') 
+    if cla ==  'None' :
+        cla = None 
     if cla != None :
         if user_type ==  1 : 
             search_string = search_string   + " and seek_designation = '" + cla + "'"
@@ -174,17 +173,20 @@ def search(request) :
         pgno  = 1 
     data = Paginator(bsd  , 2 )
     asd = data.page(pgno)
-
-
     if asd != None : 
         for i in asd : 
             if user_type == 1 : 
+                if i.seek_skills == None : 
+                    i.skill = {}
+                    continue 
+                i.skill =  i.seek_skills['skills']
+            else :
                 if i.teach_skills == None : 
                     i.skill = {}
-                    continue  
-                print(i.teach_skills)
-                i.skill =  i.teach_skills
+                    continue 
+                i.skill =  i.teach_skills['skills']
 
+            i.Rating = range(0 ,  i.rating )
 
     locations = country.objects.all()
     language_list_ht =  language_list.objects.all()
@@ -271,7 +273,7 @@ def search(request) :
     try :
         inputs['section'] = request.GET.get('section')
     except :
-        inputs['section'] =None
+        del inputs['section'] 
     try : 
         inputs['nextpage'] = int(request.GET.get('page') ) +1
 

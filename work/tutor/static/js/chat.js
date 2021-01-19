@@ -5,7 +5,7 @@ const text_box = '<div class="card-panel right" style="width: 75%; position: rel
 
 const image_box = '<div class="card-panel right" style="width: 75%; position: relative">' +
 '<div style="position: absolute; top: 0; left:3px; font-weight: bolder" class="title">{sender}</div>' +
-' <a href="{message}" download > message_icon </a> '+
+' <a href="{message}" download > <img src="media/file.png" height=200 weidth=100 > </a> '+
 '' +
 '</div>';
 
