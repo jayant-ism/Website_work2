@@ -10,8 +10,6 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/chat.js' %}"></script>
-        <script src="{% static 'css/dropzone.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/dropzone.css' %}">
 
     </head>
     <body>
@@ -42,14 +40,6 @@
         <!-- <button  class="upload_button"> Upload </button> 
         -->
 
-
-        <form id="post-form" name = "post-text"   action="uploadfilechat" enctype = "multipart/form-data"  method = "POST" >{% csrf_token %}
-            <input id="post-text" name="post-text" type="file">
-            <input name="sender" value="{{sender}}" type="hidden">
-            <input name="receive" value="{{receiver}}" type="hidden">
-            <input type="submit">
-
-        </form>
   
     
     </div>
@@ -66,10 +56,13 @@
 
 
                     
-                    <form action="chat">
-                        <input name="receiver" type="hidden" value="{{user.id}}" > 
-                        <input class="user_select" type="submit" value="{{user.first_name}}">
-                    </form>
+                <form action="chat" class="user_select">
+                        
+                    
+                    <input id="connect_id" name="connect_id" type="hidden" value="{{user.id}}"> 
+                   
+                    <input id="start"  type="submit">
+                </form>
                 {% endfor %}
 
           
@@ -84,21 +77,40 @@
              {% block messages %}
          {% endblock %}
             </div>
-            <form id="chat-box" class="form-group" method="post">
+
+
+
+            <form id="chat-box" class="form-group" action="api/messages" method="post">
                 {% csrf_token %}
-                
+         
 
                 <div class="row">
                     <div class="col s11">
                         <div class="input-field">
-                            <input id="id_message" name="message" type="text" placeholder="Type your message..">
+                            <input  id="id_message" name="message" type="text" placeholder="Type your message.."> 
+                            <input  id="connect_id" name="connect_id" type="hidden" value="{{connect_id}}">
+                            <input  id="sender" name="sender" type="hidden" value="{{sender}}"> 
+
+                            
                         </div>
                     </div>
                     <div class="col s1" style="line-height: 80px">
-                        <button class="btn btn-floating blue lighten-2 waves-effect waves-light"><i class="material-icons">send</i></button>
+                        <button  class="btn btn-floating blue lighten-2 waves-effect waves-light"><i class="material-icons">send</i></button>
                     </div>
                 </div>
-            </form>
+            
+            </form>    
+
+        <form id="post-form" class="form-group"   action="uploadfilechat" enctype = "multipart/form-data"  method = "POST" >
+            {% csrf_token %}
+            <label for="post-text"><img src="/media/cars/attach.png" width=30 height=30> </label>
+            <input id="post-text" name="post-text" type="file" hidden/> 
+            <input name="sender" value="{{sender}}" hidden>
+            <input name="connect_id" value="{{connect_id}}" type="hidden">
+            <input type="submit" >
+
+        </form>
+
             </div>
         </div>
     </div>
@@ -108,18 +120,14 @@
         <script>
          var token = '{{csrf_token}}';
 
-        // For receiving, set global variables to be used by the 'receive' function
-        sender_id = "{{ receiver.id }}"; //Context variable for receiver
-        receiver_id = "{{sender}} , {{receiver}}"; //Context variable for current logged in user
-        //For sending
         $(function () {
-            scrolltoend(); // Function to show the latest message, which is at the bottom of the message box, by scrolling to the end
-            //Handling the submit event to send the message.
+            scrolltoend(); 
+
             $('#chat-box').on('submit', function (event) {
                 event.preventDefault();
-                var message = $('#id_message');
-                send({{sender}}, {{receiver}}, message.val() ,"text"); //Send function will be defined within 'chat.js'
-                message.val(''); //Clear content of the the input field after sending
+                var message = new FormData(this) ; 
+                send( message ); //Send function will be defined within 'chat.js'
+                
             })
 
 
@@ -127,7 +135,7 @@
             event.preventDefault();
             console.log("form submitted!")  // sanity check
             var formData = new FormData(this);
-            create_post( {{sender}}, {{receiver}} , formData );
+            create_post( {{sender}} , formData );
 
          }) 
         
@@ -136,10 +144,11 @@
 
 
         })
-        receive({{sender}} , {{receiver}} , 0 )  ;
+        receive({{sender}} , {{connect_id}} , 0 )  ;
+    
         window.setInterval(function(data){
   /// call your function here
-  receive({{sender}} , {{receiver}} , 1) ;
+   receive({{sender}} , {{connect_id}}  , 1) ;
 }, 50000);
 
 

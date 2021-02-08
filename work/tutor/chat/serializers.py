@@ -7,5 +7,5 @@ from basic.models import Message
 class Messageserilizer(serializers.ModelSerializer) :
       class Meta : 
         model = Message 
-        fields = ['sender', 'receiver' , 'message' , 'timestamp' , 'id' , 'message_type']
+        fields = ['sender', 'receiver' , 'message' , 'timestamp' , 'id' , 'message_type' , 'comment' , 'connect_id']
 

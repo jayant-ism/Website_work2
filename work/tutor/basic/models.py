@@ -58,6 +58,9 @@ class connect(models.Model):
     connect_seek_rating = models.IntegerField()
     connect_teach_rating = models.IntegerField()
     connect_rate = models.IntegerField()
+    connect_details = models.CharField(max_length=1200 ,  blank=True )
+    connect_title = models.CharField(max_length=120 ,  blank=False , default=""  )
+    
 
 
 
@@ -125,6 +128,9 @@ class Message(models.Model) :
     is_read =  models.BooleanField(default=False )
     id = models.AutoField(primary_key=True)
     message_type = models.CharField(default="text" , max_length=10)
+    comment = models.CharField(default="" , max_length=1000)
+    connect_id = models.IntegerField(default=0)
+
     def __str__(self) : 
         return self.message
     class Meta : 

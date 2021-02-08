@@ -5,7 +5,7 @@ const text_box = '<div class="card-panel right" style="width: 75%; position: rel
 
 const image_box = '<div class="card-panel right" style="width: 75%; position: relative">' +
 '<div style="position: absolute; top: 0; left:3px; font-weight: bolder" class="title">{sender}</div>' +
-' <a href="{message}" download > <img src="media/file.png" height=200 weidth=100 > </a> '+
+' <a href="{message}" download > <img src="media/file.png" height=50 weidth=25 > <p> {comment} </p></a> '+
 '' +
 '</div>';
 
@@ -29,61 +29,65 @@ function scrolltoend() {
 }
 var time = 0 ; 
 
-function send(sender, receiver, message , message_type) {
-    var token = '{{csrf_token}}';
 
 
-    data = '{"sender": ' + sender + ', "receiver": ' + receiver + ',"message": "' + message +  '" }'
-    console.log(data) ; 
-    if ( message_type == 'text ') {
-    $.ajax({
-      type: "POST",
-      url: '/api/messages',
-      data: data,
-      success: function (data) {
 
-        var box = text_box.replace('{sender}', sender );
 
-    
-        box = box.replace('{message}', message);
-        $('#board').append(box);
-        scrolltoend();
-        console.log(time) ; 
-        if ( time < data.id)
-        {
-            time =  data.id ;
-        }
-
-    }
-
-    });
-}else 
+function send(formData )
 {
-    var box = image_box.replace('{sender}', sender );
+    $.ajax({
+        url: "api/messages",
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+            
 
-    
-    box = box.replace('{message}', message);
-    $('#board').append(box);
-    scrolltoend();
-    console.log(time) ; 
-    if ( time < data.id)
-    {
-        time =  data.id ;
-    }
+            var box = text_box.replace('{sender}', data.sender);
+            box = box.replace('{message}', data.message);
+            console.log(parseInt(data.sender) ) ;
+
+            if(parseInt(data.sender) != parseInt(sender) )
+            {
+                box = box.replace('right', 'left blue lighten-5');
+            }$('#board').append(box);
+            scrolltoend();
+            if ( time < data.id)
+            {
+                time =  data.id ;
+            }
+            document.getElementById("post-form").reset();
+
+
+
+
+
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+
 
 
 }
 
 
-}
 
-function uploads(sender , receiver , message ,  message_type ) {
 
-}
 
-function receive(sender, receiver , trail ) {
 
-    $.get('/api/messages/' + sender + '/' + receiver+'/' + time + '/'  + trail , function (data) {
+
+
+
+
+
+
+
+
+
+function receive(sender,connect_id,  trail ) {
+
+    $.get('/api/messages/' + sender + '/' + connect_id+'/' + time + '/'  + trail , function (data) {
         if (data.length !== 0) {
             for (var i = 0; i < data.length; i++) {
                 console.log(data[i]);
@@ -94,8 +98,7 @@ function receive(sender, receiver , trail ) {
                     var box = text_box.replace('{sender}', data[i].sender);
                     box = box.replace('{message}', data[i].message);
                     console.log(parseInt(data[i].sender) ) ;
-                    console.log( parseInt(receiver));
-                    if(parseInt(data[i].sender) == parseInt(receiver) )
+                    if(parseInt(data[i].sender) != parseInt(sender) )
                     {
                         box = box.replace('right', 'left blue lighten-5');
                     }$('#board').append(box);
@@ -110,9 +113,9 @@ function receive(sender, receiver , trail ) {
 
                     var box = image_box.replace('{sender}', data[i].sender);
                     box = box.replace('{message}', data[i].message);
+                    box = box.replace('{comment}', data[i].comment)
                     console.log(parseInt(data[i].sender) ) ;
-                    console.log( parseInt(receiver));
-                    if(parseInt(data[i].sender) == parseInt(receiver) )
+                    if(parseInt(data[i].sender) != parseInt(sender) )
                     {
                         box = box.replace('right', 'left blue lighten-5');
                     }$('#board').append(box);
@@ -162,15 +165,35 @@ function register(username, password , email , role_id) {
 /* for upload */
 
 // AJAX for posting
-function create_post( sender  , receiver , formData ) {
+function create_post( sender   , formData ) {
 
     $.ajax({
         url: "uploadfilechat",
         type: 'POST',
         data: formData,
         success: function (data) {
-            alert(data.url )
-            send(sender, receiver, data.url , "file")
+            
+
+            var box = image_box.replace('{sender}', data.sender);
+            box = box.replace('{message}', data.message);
+            box = box.replace('{comment}', data.comment)
+            console.log(parseInt(data.sender) ) ;
+            if(parseInt(data.sender) != parseInt(sender) )
+            {
+                box = box.replace('right', 'left blue lighten-5');
+            }$('#board').append(box);
+            scrolltoend();
+            if ( time < data.id)
+            {
+                time =  data.id ;
+            }
+
+            document.getElementById("post-form").reset();
+
+
+
+
+
         },
         cache: false,
         contentType: false,
