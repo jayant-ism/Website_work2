@@ -33,7 +33,7 @@ var time = 0 ;
 
 
 
-function send(formData )
+function send(formData , sender )
 {
     $.ajax({
         url: "api/messages",

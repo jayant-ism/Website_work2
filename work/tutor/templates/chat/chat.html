@@ -14,36 +14,59 @@
     </head>
     <body>
     <nav class="blue lighten-3">
-        <div class="nav-wrapper container">
-          
-             <a href="#" class="bsc"  >TutorLabs.com </a>
-              <a href="#"  class="asc" ><img width=50 height=50 style="  border-radius: 50% ;"  src="{% static 'download.jpg' %}">       </a> 
+        <style>
+            ul {
+                list-style: none  ;
+              list-style-type: none;
+              margin: 0;
+              padding: 0;
+              overflow: hidden;
+            }
             
-                  <a href="#" style="float: right;" > Dashboard</a>
-                  <a href="#"  style="float: right;" > Mytutors</a>
-                  <a href="#"  style="float: right;" > Reports </a>
-                  <a href="#"  style="float: right;" > Messages</a>
-      
-                  
-        
-       
-        </div>
+            li {
+              float: left;
+            }
+            
+            li a {
+              display: block;
+              color: white;
+              text-align: center;
+              padding: 14px 16px;
+              text-decoration: none;
+            }
+            
+            li a:hover:not(.active) {
+              background-color: #111;
+            }
+            
+            .active {
+              background-color: #4CAF50;
+            }
+            </style>
+
+        <ul style="background-color: #333;">
+            <li><a  href="#">TutorLabs.com </a></li>
+            <li > <a href="#"> Dashboard </a></li>
+            <li> <a href="#">  Mytutors</a></li>
+            <li> <a href="#"> Reports  </a></li>
+            <li> <a href="#"> Messages </a></li>
+
+
+          </ul>
+
+          
+
     </nav>
 
     <script>
+        var done = 0 ; 
+        var connect_id = 0 ; 
+
+
     function ok(){ document.getElementById("board").innerHTML = "";}
     </script>
 
-<div class="container upload_details">
-    <div> 
-        
-        <!-- <button  class="upload_button"> Upload </button> 
-        -->
 
-  
-    
-    </div>
-</div>
 
 
 <div class="container"> 
@@ -52,20 +75,13 @@
         <div class="col s3">
         <div class="card">
             <div class="collection">
-                {% for user in users %}
+          
 
-
-                    
-                <form action="chat" class="user_select">
-                        
-                    
-                    <input id="connect_id" name="connect_id" type="hidden" value="{{user.id}}"> 
-                   
-                    <input id="start"  type="submit">
-                </form>
+                {% for user in users %} 
+                <button  class="user_select" onclick=change_connect({{user.connect_id}})> <p> {{user.connect_title}}  <hr>   <br> {{user.connect_details}}    </p></button>                    
+           
                 {% endfor %}
 
-          
 
             </div>
         </div>
@@ -79,37 +95,47 @@
             </div>
 
 
-
-            <form id="chat-box" class="form-group" action="api/messages" method="post">
-                {% csrf_token %}
-         
-
-                <div class="row">
-                    <div class="col s11">
-                        <div class="input-field">
-                            <input  id="id_message" name="message" type="text" placeholder="Type your message.."> 
-                            <input  id="connect_id" name="connect_id" type="hidden" value="{{connect_id}}">
-                            <input  id="sender" name="sender" type="hidden" value="{{sender}}"> 
-
-                            
-                        </div>
-                    </div>
-                    <div class="col s1" style="line-height: 80px">
-                        <button  class="btn btn-floating blue lighten-2 waves-effect waves-light"><i class="material-icons">send</i></button>
-                    </div>
-                </div>
-            
-            </form>    
-
-        <form id="post-form" class="form-group"   action="uploadfilechat" enctype = "multipart/form-data"  method = "POST" >
+        <form id="chat-box" style="width:100%" class="form-group" action="api/messages" method="post">
             {% csrf_token %}
-            <label for="post-text"><img src="/media/cars/attach.png" width=30 height=30> </label>
-            <input id="post-text" name="post-text" type="file" hidden/> 
-            <input name="sender" value="{{sender}}" hidden>
-            <input name="connect_id" value="{{connect_id}}" type="hidden">
-            <input type="submit" >
+                <ul style="width:100% ; list-style:none" >
+                    <li style="width:80%" >
+                        <input style="width:100%"   id="id_message" name="message" type="text" placeholder="Type your message.."> 
+                       
+                    </li>
+                    <li>
+                        <input  id="sender" name="sender" type="hidden" value="{{sender}}"> 
+                        
+                    </li>
+                    <li>
+                        <button  class="btn btn-floating blue lighten-2 waves-effect waves-light"><i class="material-icons">send</i></button>
+                        
+                    </li>
+                    <li>  
+                        <label for="post-text" form="post-form" ><img src="/media/cars/attach.png" width=30 height=30> </label>
+                        <input id="post-text" form="post-form" name="post-text" type="file" hidden/> 
+                    </li>
+                    <li>
+
+                        <input name="sender" form="post-form" value="{{sender}}" hidden>
+                        <input form="post-form" type="submit" >
+
+                    </li>
+                </ul>
+                        
+                    
+        
+        </form>    
+
+              
+        <form id="post-form" class="form-group"    enctype = "multipart/form-data"  method = "POST" >
+            {% csrf_token %}
+
 
         </form>
+
+</ul>
+
+  
 
             </div>
         </div>
@@ -119,14 +145,21 @@
         {% load static %}
         <script>
          var token = '{{csrf_token}}';
+            function change_connect(connecty ) {
+                connect_id = connecty ;
+                document.getElementById("board").innerHTML = "";
+                console.log(connect_id)  ; 
+            receive({{sender}} , connect_id  , 0 )  ;
 
+            } 
         $(function () {
             scrolltoend(); 
 
             $('#chat-box').on('submit', function (event) {
                 event.preventDefault();
                 var message = new FormData(this) ; 
-                send( message ); //Send function will be defined within 'chat.js'
+                message.append('connect_id' , connect_id) ;
+                send( message, {{sender}} ); //Send function will be defined within 'chat.js'
                 
             })
 
@@ -135,6 +168,9 @@
             event.preventDefault();
             console.log("form submitted!")  // sanity check
             var formData = new FormData(this);
+
+            formData.append('connect_id' , connect_id) ;
+
             create_post( {{sender}} , formData );
 
          }) 
@@ -144,11 +180,13 @@
 
 
         })
-        receive({{sender}} , {{connect_id}} , 0 )  ;
-    
-        window.setInterval(function(data){
+    window.setInterval(function(data){
   /// call your function here
-   receive({{sender}} , {{connect_id}}  , 1) ;
+ if(done!=0)
+{  
+    getElementById("connect_id").value = connect_id ; 
+    receive({{sender}} ,  connect_id , 1) ;
+}
 }, 50000);
 
 

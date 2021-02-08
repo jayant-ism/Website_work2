@@ -61,9 +61,8 @@ def message_list(request, sender=None , receiver = None , viewss=None , idst = N
 def chat_view(request):
     if request.method == "GET":
         
-        print(request.GET['connect_id'])
         return render(request, 'chat/chat.html',
-                      {'users': connect.objects.filter(connect_status=1 , student_id=request.session['userid'] ) | connect.objects.filter(connect_status=1 , teacher_id=request.session['userid']) , 'sender' :  request.session['userid'] , 'connect_id': request.GET.get('connect_id') , 'sender' :  request.session['userid'] }  ) #Returning context for all users except the current logged-in user
+                      {'users': connect.objects.filter(connect_status=1 , student_id=request.session['userid'] ) | connect.objects.filter(connect_status=1 , teacher_id=request.session['userid']) , 'sender' :  request.session['userid'] ,  'sender' :  request.session['userid'] }  ) 
 
 
 
