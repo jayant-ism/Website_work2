@@ -13,14 +13,47 @@ const image_box = '<div class="card-panel right" style="width: 75%; position: re
 
 let userState = ''
 
-const userDiv = (senderId, receiverId, name, online) =>
-    (`<a href="/chat/${senderId}/${receiverId}" id="user${receiverId}" class="collection-item row">
-                    <img src="https://frontend-1.adjust.com/new-assets/images/site-images/interface/user.svg" class="col s2">
-                    <div class="col s10">
-                    <span class="title" style="font-weight: bolder">${name}</span>
-                    <span style="color: ${online ? 'green' : 'red'}; float: right">${online ? 'online' : 'offline'}</span>
-                    </div>
-                </a>`)
+var sender_details ;
+var receive_details ;
+
+
+function set_user_details(user_id  ) {
+    // get the user id for the user 
+    
+    $.ajax({
+        url :"data/" + String(user_id) ,
+        type :'GET' ,
+        success: function(data) {
+            
+            sender_details = data[0]  ;
+
+        } 
+    })
+
+
+}
+
+
+function set_receiver_details(user_id  ) {
+    // get the user id for the user 
+    
+    $.ajax({
+        url :"data/" + String(user_id) ,
+        type :'GET' ,  
+        success: function(data) {
+            
+            receive_details = data[0]  ;
+
+        } 
+    })
+
+
+}
+
+
+
+
+
 
 function scrolltoend() {
     $('#board').stop().animate({
@@ -28,10 +61,6 @@ function scrolltoend() {
     }, 800);
 }
 var time = 0 ; 
-
-
-
-
 
 function send(formData , sender )
 {
@@ -42,7 +71,7 @@ function send(formData , sender )
         success: function (data) {
             
 
-            var box = text_box.replace('{sender}', data.sender);
+            var box = text_box.replace('{sender}', sender_details['first_name']);
             box = box.replace('{message}', data.message);
             console.log(parseInt(data.sender) ) ;
 
@@ -95,13 +124,22 @@ function receive(sender,connect_id,  trail ) {
 
 
                 if(data[i].message_type == 'text') {
-                    var box = text_box.replace('{sender}', data[i].sender);
+                    var box = text_box ;
                     box = box.replace('{message}', data[i].message);
                     console.log(parseInt(data[i].sender) ) ;
                     if(parseInt(data[i].sender) != parseInt(sender) )
-                    {
+                    {   
+
+                        box = box.replace('{sender}', receive_details['first_name'] );
                         box = box.replace('right', 'left blue lighten-5');
-                    }$('#board').append(box);
+                    }else
+                    {
+                        
+                        box = box.replace('{sender}', sender_details['first_name'] );
+                    }
+
+
+                    $('#board').append(box);
                     scrolltoend();
                     if ( time < data[i].id)
                     {
@@ -111,14 +149,26 @@ function receive(sender,connect_id,  trail ) {
                 } else {
 
 
-                    var box = image_box.replace('{sender}', data[i].sender);
+                    var box = image_box;
                     box = box.replace('{message}', data[i].message);
                     box = box.replace('{comment}', data[i].comment)
                     console.log(parseInt(data[i].sender) ) ;
                     if(parseInt(data[i].sender) != parseInt(sender) )
-                    {
+                    {   
+
+                        box = box.replace('{sender}', receive_details['first_name'] );
                         box = box.replace('right', 'left blue lighten-5');
-                    }$('#board').append(box);
+                    }else
+                    {
+                        
+                        box = box.replace('{sender}', sender_details['first_name'] );
+                    }
+
+                    
+
+
+                    
+                    $('#board').append(box);
                     scrolltoend();
                     if ( time < data[i].id)
                     {
@@ -136,21 +186,7 @@ function receive(sender,connect_id,  trail ) {
     })
 }
 
-function getUsers(senderId, callback) {
-    return $.get('/api/users', function (data) {
-        if (userState !== JSON.stringify(data)) {
-            userState = JSON.stringify(data);
-            const doc = data.reduce((res, user) => {
-                if (user.id === senderId) {
-                    return res
-                } else {
-                    return [userDiv(senderId, user.id, user.username, user.online), ...res]
-                }
-            }, [])
-            callback(doc)
-        }
-    })
-}
+
 
 function register(username, password , email , role_id) {
     $.post('/api/users', '{"username": "' + username + '", "password": "' + password + '", "email_id": "' + email + '", "role": "' + role_id + '"}',
@@ -174,14 +210,18 @@ function create_post( sender   , formData ) {
         success: function (data) {
             
 
-            var box = image_box.replace('{sender}', data.sender);
+            var box = image_box ;
             box = box.replace('{message}', data.message);
             box = box.replace('{comment}', data.comment)
             console.log(parseInt(data.sender) ) ;
             if(parseInt(data.sender) != parseInt(sender) )
-            {
+            {   box = box.replace('{sender}' , receive_details['first_name'] ) ;
                 box = box.replace('right', 'left blue lighten-5');
-            }$('#board').append(box);
+            } else {
+                box = box.replace('{sender}' , sender_details['first_name'] ) ;
+            }
+            
+            $('#board').append(box);
             scrolltoend();
             if ( time < data.id)
             {
@@ -202,3 +242,4 @@ function create_post( sender   , formData ) {
 
 
 };
+

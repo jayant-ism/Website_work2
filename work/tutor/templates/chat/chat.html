@@ -1,7 +1,7 @@
 {% load static %}
   <!DOCTYPE html>
   <html>
-    <head>
+    <head onload=provoke()>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}"  media="screen,projection"/>
@@ -12,7 +12,7 @@
         <script type="text/javascript" src="{% static 'js/chat.js' %}"></script>
 
     </head>
-    <body>
+    <body  onload=provoke()>
     <nav class="blue lighten-3">
         <style>
             ul {
@@ -78,7 +78,7 @@
           
 
                 {% for user in users %} 
-                <button  class="user_select" onclick=change_connect({{user.connect_id}})> <p> {{user.connect_title}}  <hr>   <br> {{user.connect_details}}    </p></button>                    
+                <button  class="user_select" onclick=change_connect({{user.connect_id}},{{user.teacher_id}},{{user.student_id}})> <p style="text-align: left; font-size: medium; margin-left: 10px;">  {{user.connect_title}}  <hr>  </p> <p style=" text-align:left; margin-left: 20px ; font-size: 10px; color:rgb(139, 138, 138)"> {{user.connect_details}}      </p></button>                    
            
                 {% endfor %}
 
@@ -89,13 +89,20 @@
         
         <div class="col s9">
          <div class="card">
+             <div  id="above_bar"  style="background-color: rgb(65, 45, 83); display: none ;" >
+                <ul style="padding: 10px;"> 
+                    <li   style="padding:10px "> <img id="receiveimage" width=50 height=50 style="border-radius: 25px;" >  </li>
+                    <li id="receivename" style="padding-top: 25px ; color: white;"> Userid  </li>
+                </ul> 
+
+             </div>
           <div id="board" class="section grey lighten-3" style="height: 68vh; padding: 5px; overflow-y: scroll">
-             {% block messages %}
-         {% endblock %}
+
+         
             </div>
 
 
-        <form id="chat-box" style="width:100%" class="form-group" action="api/messages" method="post">
+        <form id="chat-box" style="width:100% ; display: none ;" class="form-group" action="api/messages" method="post">
             {% csrf_token %}
                 <ul style="width:100% ; list-style:none" >
                     <li style="width:80%" >
@@ -145,10 +152,26 @@
         {% load static %}
         <script>
          var token = '{{csrf_token}}';
-            function change_connect(connecty ) {
+            function change_connect(connecty , student , teacher  ) {
                 connect_id = connecty ;
                 document.getElementById("board").innerHTML = "";
-                console.log(connect_id)  ; 
+                
+                if (student == {{sender}} ) 
+                {
+                    set_receiver_details(teacher) ; 
+                } 
+                if(teacher== {{sender}} ) {
+                    set_receiver_details(student) ; 
+
+                }
+                document.getElementById("receiveimage").src = receive_details.image ;
+
+            document.getElementById("receivename").innerHTML =  receive_details.first_name ;
+
+            document.getElementById("chat-box").style.display = "block";
+                document.getElementById("above_bar").style.display = "block";
+
+
             receive({{sender}} , connect_id  , 0 )  ;
 
             } 
@@ -188,6 +211,12 @@
     receive({{sender}} ,  connect_id , 1) ;
 }
 }, 50000);
+
+function provoke(){
+
+    set_user_details({{sender}}) ; 
+
+}
 
 
 

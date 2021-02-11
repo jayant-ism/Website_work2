@@ -8,13 +8,22 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
 from rest_framework.parsers import JSONParser
 from basic.models import Message 
-from chat.serializers import Messageserilizer
+from chat.serializers import Messageserilizer , user_details_serializer
 import json
 from datetime import date, time, datetime
 from basic.models import user_details
 
 
+from rest_framework.views import APIView
 
+class datashow(APIView) : 
+    def get(  self , request , user_id  ):
+        
+        details = user_details.objects.filter(id=int(user_id)).only( 'first_name' ,  'image' )
+        
+        serialize = user_details_serializer(details, many=True ) 
+        print(serialize.data)
+        return  JsonResponse( serialize.data, safe=False )
 
 @csrf_exempt
 def message_list(request, sender=None , receiver = None , viewss=None , idst = None ) :
